@@ -1,80 +1,96 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>FieldVoice Supervisor</title>
-    <link rel="stylesheet" href="/static/styles.css?v=openai-1" />
-  </head>
-  <body>
-    <main class="shell">
-      <section class="topbar" aria-label="FieldVoice workspace">
-        <div>
-          <p class="eyebrow">FieldVoice</p>
-          <h1>Voice Work Orders</h1>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FieldVoice Supervisor</title>
+  <link rel="stylesheet" href="/static/styles.css?v=openai-1" />
+</head>
+
+<body>
+  <main class="shell">
+    <section class="topbar" aria-label="FieldVoice workspace">
+      <div>
+        <p class="eyebrow">FieldVoice</p>
+        <h1>Voice Work Orders</h1>
+      </div>
+      <div class="status-pill" id="socketStatus">Connecting</div>
+    </section>
+
+    <section class="metrics" aria-label="Supervisor metrics">
+      <article>
+        <span id="totalWorkOrders">0</span>
+        <p>Total work orders</p>
+      </article>
+      <article>
+        <span id="openWorkOrders">0</span>
+        <p>Open</p>
+      </article>
+      <article>
+        <span id="escalatedWorkOrders">0</span>
+        <p>Escalated</p>
+      </article>
+      <article>
+        <span id="highSeverity">0</span>
+        <p>High or critical</p>
+      </article>
+    </section>
+
+    <section class="workspace">
+      <div class="panel voice-panel">
+        <div class="panel-title">
+          <h2>Voice Console</h2>
+          <div class="panel-actions">
+            <span id="aiStatus" class="speech-status">Checking AI</span>
+            <span id="speechStatus" class="speech-status">Checking voice</span>
+          </div>
         </div>
-        <div class="status-pill" id="socketStatus">Connecting</div>
-      </section>
-
-      <section class="metrics" aria-label="Supervisor metrics">
-        <article><span id="totalWorkOrders">0</span><p>Total work orders</p></article>
-        <article><span id="openWorkOrders">0</span><p>Open</p></article>
-        <article><span id="escalatedWorkOrders">0</span><p>Escalated</p></article>
-        <article><span id="highSeverity">0</span><p>High or critical</p></article>
-      </section>
-
-      <section class="workspace">
-        <div class="panel voice-panel">
-          <div class="panel-title">
-            <h2>Voice Console</h2>
-            <div class="panel-actions">
-              <span id="aiStatus" class="speech-status">Checking AI</span>
-              <span id="speechStatus" class="speech-status">Checking voice</span>
-            </div>
+        <label for="voiceText">Transcript</label>
+        <textarea id="voiceText" rows="6">
+Inspecting pump P-M-P 204 Bravo. Bearing temperature high, fault code F-12. Action: applied coolant. Need replacement seal kit, severity high.</textarea>
+        <div class="voice-pad">
+          <button id="voiceCapture" class="capture-button" aria-label="Hold to talk or press to turn recording on"
+            data-tooltip="Hold to talk or press to turn recording on">
+            <span class="button-icon" aria-hidden="true"></span>
+            <span class="mic-stop-icon" aria-hidden="true"></span>
+          </button>
+          <div class="voice-meter" aria-hidden="true">
+            <span></span><span></span><span></span><span></span><span></span>
           </div>
-          <label for="voiceText">Transcript</label>
-          <textarea id="voiceText" rows="6">Inspecting pump P-M-P 204 Bravo. Bearing temperature high, fault code F-12. Action: applied coolant. Need replacement seal kit, severity high.</textarea>
-          <div class="voice-pad">
-            <button
-              id="voiceCapture"
-              class="capture-button"
-              aria-label="Hold to talk or press to turn recording on"
-              data-tooltip="Hold to talk or press to turn recording on"
-            >
-              <span class="button-icon" aria-hidden="true"></span>
-              <span class="mic-stop-icon" aria-hidden="true"></span>
-            </button>
-            <div class="voice-meter" aria-hidden="true">
-              <span></span><span></span><span></span><span></span><span></span>
-            </div>
-            <span class="voice-hint">Hold mic to speak</span>
-          </div>
-          <div class="action-dock" aria-label="Work order actions">
-            <button id="sendInspection" class="action-button">Create work order</button>
-            <button id="askQuestion" class="action-button">Ask query</button>
-            <button id="escalate" class="action-button">Escalate</button>
-            <button id="syncQueue" class="action-button">Sync</button>
-          </div>
-          <div class="confirmation" id="confirmation">Ready for a field command.</div>
+          <span class="voice-hint">Hold mic to speak</span>
         </div>
-
-        <div class="panel activity-panel">
-          <div class="panel-title">
-            <h2>Live Activity</h2>
-            <span id="queueCount">0 queued</span>
-          </div>
-          <ol id="activityFeed" class="activity-feed"></ol>
+        <div class="action-dock" aria-label="Work order actions">
+          <button id="sendInspection" class="action-button">
+            Create work order
+          </button>
+          <button id="askQuestion" class="action-button">Ask query</button>
+          <button id="escalate" class="action-button">Escalate</button>
+          <button id="syncQueue" class="action-button">Sync</button>
         </div>
-      </section>
+        <div class="confirmation" id="confirmation">
+          Ready for a field command.
+        </div>
+      </div>
 
-      <section class="panel">
-          <div class="panel-title">
-            <h2>Work Orders</h2>
-          <button id="refresh" class="link-button">Refresh</button>
-          </div>
-        <div id="workOrders" class="work-order-list"></div>
-      </section>
-    </main>
-    <script src="/static/app.js?v=openai-1"></script>
-  </body>
+      <div class="panel activity-panel">
+        <div class="panel-title">
+          <h2>Live Activity</h2>
+          <span id="queueCount">0 queued</span>
+        </div>
+        <ol id="activityFeed" class="activity-feed"></ol>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-title">
+        <h2>Work Orders</h2>
+        <button id="refresh" class="link-button">Refresh</button>
+      </div>
+      <div id="workOrders" class="work-order-list"></div>
+    </section>
+  </main>
+  <script src="/static/app.js?v=openai-1"></script>
+</body>
+
 </html>

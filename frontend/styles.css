@@ -378,24 +378,24 @@ button:hover {
   display: none;
 }
 
-.capture-button.is-recording ~ .voice-meter span {
+.capture-button.is-recording~.voice-meter span {
   animation: voiceWave 800ms ease-in-out infinite;
   background: var(--accent);
 }
 
-.capture-button.is-recording ~ .voice-meter span:nth-child(2) {
+.capture-button.is-recording~.voice-meter span:nth-child(2) {
   animation-delay: 100ms;
 }
 
-.capture-button.is-recording ~ .voice-meter span:nth-child(3) {
+.capture-button.is-recording~.voice-meter span:nth-child(3) {
   animation-delay: 200ms;
 }
 
-.capture-button.is-recording ~ .voice-meter span:nth-child(4) {
+.capture-button.is-recording~.voice-meter span:nth-child(4) {
   animation-delay: 300ms;
 }
 
-.capture-button.is-recording ~ .voice-meter span:nth-child(5) {
+.capture-button.is-recording~.voice-meter span:nth-child(5) {
   animation-delay: 400ms;
 }
 
@@ -454,6 +454,7 @@ button:disabled {
 }
 
 @keyframes pulseMic {
+
   0%,
   100% {
     transform: scale(1);
@@ -465,6 +466,7 @@ button:disabled {
 }
 
 @keyframes voiceWave {
+
   0%,
   100% {
     transform: scaleY(0.6);

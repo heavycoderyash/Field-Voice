@@ -45,8 +45,8 @@ design decisions.
 
 ## 2. Key design decisions
 
-- **Single LLM orchestrator with tool-calling** decides intent (report vs.
-  query vs. work-order command) and routes — cleaner than a separate classifier,
+- **Single LLM orchestrator with tool-calling** decides intent (report vs
+  query vs work-order command) and routes — cleaner than a separate classifier,
   and the natural fit for tool-use APIs. Use JSON-mode / function calling for
   FR2 so the schema is guaranteed.
 - **Domain biasing, two layers:** (a) STT `initial_prompt` seeded with the
@@ -127,4 +127,4 @@ Enums:
 | TTS first audio (streamed) | ~0.3–0.5 s |
 | **Total to first speech** | **~1.5–2.5 s** |
 
-Stream every stage; never wait for full completion before starting the next.
+Stream every stage, never wait for full completion before starting the next.
